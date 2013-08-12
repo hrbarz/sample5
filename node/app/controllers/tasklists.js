@@ -12,10 +12,10 @@ var mongoose = require('mongoose')
  * Load
  */
 
-exports.load = function(req, res, next, id){
+exports.load = function(req, res, next, idtasklist){
   var User = mongoose.model('User')
 
-  Tasklist.load(id, function (err, tasklist) {
+  Tasklist.load(idtasklist, function (err, tasklist) {
     if (err) return next(err)
     if (!tasklist) return next(new Error('not found'))
     req.tasklist = tasklist
@@ -41,7 +41,7 @@ exports.index = function(req, res){
   Tasklist.list(options, function(err, tasklist) {
     if (err) return res.render('500')
     Tasklist.count().exec(function (err, count) {
-      res.send({
+      res.json({
         title: 'Tasklists',
         articles: tasklist,
         page: page + 1,
@@ -56,14 +56,14 @@ exports.index = function(req, res){
  */
 
 exports.new = function(req, res){
-  res.send({
+  res.json({
     title: 'New Tasklist',
     tasklist: new Tasklist({})
   })
 }
 
 /**
- * Create an article
+ * Create an tasklist
  */
 
 exports.create = function (req, res) {
@@ -72,31 +72,31 @@ exports.create = function (req, res) {
 
   tasklist.save(function (err) {
     if (!err) {
-      req.flash('success', 'Successfully created article!')
-      return res.redirect('/tasklists/'+article._id)
+      req.flash('message', 'Successfully created tasklist!')
+      return res.redirect('/tasklists/'+tasklist._id)
     }
 
-    res.render('articles/new', {
-      title: 'New Article',
-      article: article,
+    res.json({
+      title: 'New Tasklist',
+      tasklist: tasklist,
       errors: utils.errors(err.errors || err)
     })
   })
 }
 
 /**
- * Edit an article
+ * Edit an tasklist
  */
 
 exports.edit = function (req, res) {
-  res.render('articles/edit', {
-    title: 'Edit ' + req.article.title,
-    article: req.article
+  res.json('tasklists/edit', {
+    name: 'Edit ' + req.tasklist.name,
+    tasklist: req.tasklist
   })
 }
 
 /**
- * Update article
+ * Update tasklist
  */
 
 exports.update = function(req, res){
@@ -121,7 +121,8 @@ exports.update = function(req, res){
  */
 
 exports.show = function(req, res){
-  res.render('articles/show', {
+  res.json({
+    message: req.flash('message'),
     title: req.article.title,
     article: req.article
   })
