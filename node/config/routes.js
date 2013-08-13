@@ -10,7 +10,7 @@ var async = require('async')
  */
 
 var users       = require('../app/controllers/users')
-  , tasks       = require('../app/controllers/tasks')
+  //, tasks       = require('../app/controllers/tasks')
   , tasklists   = require('../app/controllers/tasklists')
   , auth        = require('./middlewares/authorization')
 
@@ -101,7 +101,7 @@ module.exports = function (app, passport) {
   app.put('/tasklists/:idtasklist'        , auth.requiresLogin, tasklists.update)
   app.del('/tasklists/:idtasklist'        , auth.requiresLogin, tasklists.destroy)
 
-  app.param('idtasklist', articles.load)
+  app.param('idtasklist', tasklists.load)
 
   // home route
   app.get('/', auth.requiresLogin , tasklists.index)

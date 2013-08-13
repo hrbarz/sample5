@@ -4,21 +4,22 @@
  */
 
 var mongoose = require('mongoose')
-  , Tasklist = mongoose.model('Tasklist')
-  , utils = require('../../lib/utils')
-  , _ = require('underscore')
+  , Task     = mongoose.model('Task')
+  , utils    = require('../../lib/utils')
+  , _        = require('underscore')
 
 /**
  * Load
  */
 
-exports.load = function(req, res, next, idtasklist){
+exports.load = function(req, res, next, idtask){
+  
   var User = mongoose.model('User')
 
-  Tasklist.load(idtasklist, function (err, tasklist) {
+  Task.load(idtask, function (err, task) {
     if (err) return next(err)
     if (!tasklist) return next(new Error('not found'))
-    req.tasklist = tasklist
+    req.task = task
     next()
   })
 }

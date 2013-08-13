@@ -25,14 +25,17 @@ var setTags = function (tags) {
 }
 
 /**
- * Tasklist Schema
+ * Task Schema
  */
 
-var TasklistSchema = new Schema({
+var TaskSchema = new Schema({
   name:         {type : String, default : '', trim : true},
   description:  {type : String, default : '', trim : true},
   user:         {type : Schema.ObjectId, ref: 'User'},
-  tasks:        {type : Schema.ObjectId, ref: 'Task' },
+  tasklist:     {type : Schema.ObjectId, ref: 'Tasklist' },
+  priority:     {type : Number, min: 0, max: 3, default: 0 },
+  status:       {type : Number, default: 0 },
+
   created_at:   {type : Date, default : Date.now},
   updated_at:   {type : Date, default : Date.now},
 })
@@ -41,15 +44,15 @@ var TasklistSchema = new Schema({
  * Validations
  */
 
-TasklistSchema.path('name').validate(function (name) {
+TaskSchema.path('name').validate(function (name) {
   return name.length > 0
-}, 'Tasklist name cannot be blank')
+}, 'Task name cannot be blank')
 
 /**
  * Pre-remove hook
  */
 
-TasklistSchema.pre('remove', function (next) {
+TaskSchema.pre('remove', function (next) {
   
   next()
 
@@ -59,7 +62,7 @@ TasklistSchema.pre('remove', function (next) {
  * Methods
  */
 
-TasklistSchema.methods = {
+TaskSchema.methods = {
 
   
 }
@@ -68,10 +71,10 @@ TasklistSchema.methods = {
  * Statics
  */
 
-TasklistSchema.statics = {
+TaskSchema.statics = {
 
   /**
-   * Find Tasklist by id
+   * Find Task by id
    *
    * @param {ObjectId} id
    * @param {Function} cb
@@ -85,7 +88,7 @@ TasklistSchema.statics = {
   },
 
   /**
-   * List Tasklists
+   * List Tasks
    *
    * @param {Object} options
    * @param {Function} cb
@@ -105,4 +108,4 @@ TasklistSchema.statics = {
 
 }
 
-mongoose.model('Tasklist', TasklistSchema)
+mongoose.model('Task', TaskSchema)
