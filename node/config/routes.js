@@ -10,7 +10,7 @@ var async = require('async')
  */
 
 var users       = require('../app/controllers/users')
-  //, tasks       = require('../app/controllers/tasks')
+  , tasks       = require('../app/controllers/tasks')
   , tasklists   = require('../app/controllers/tasklists')
   , auth        = require('./middlewares/authorization')
 
@@ -92,7 +92,7 @@ module.exports = function (app, passport) {
 
   app.param('userId', users.user)
 
-  // article routes
+  // tasklist routes
   app.get('/tasklists'                    , auth.requiresLogin, tasklists.index)
   app.get('/tasklists/new'                , auth.requiresLogin, tasklists.new) 
   app.post('/tasklists'                   , auth.requiresLogin, tasklists.create)  
@@ -102,6 +102,18 @@ module.exports = function (app, passport) {
   app.del('/tasklists/:idtasklist'        , auth.requiresLogin, tasklists.destroy)
 
   app.param('idtasklist', tasklists.load)
+
+  // task routes
+  app.get('/tasks'                , auth.requiresLogin, tasks.index)
+  app.get('/tasks/new'            , auth.requiresLogin, tasks.new) 
+  app.post('/tasks'               , auth.requiresLogin, tasks.create)  
+  app.get('/tasks/:idtask'        , auth.requiresLogin, tasks.show)
+  app.get('/tasks/:idtask/edit'   , auth.requiresLogin, tasks.edit)
+  app.put('/tasks/:idtask'        , auth.requiresLogin, tasks.update)
+  app.del('/tasks/:idtask'        , auth.requiresLogin, tasks.destroy)
+
+  app.param('idtask', tasks.load)
+
 
   // home route
   app.get('/', auth.requiresLogin , tasklists.index)

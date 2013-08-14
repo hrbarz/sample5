@@ -35,7 +35,7 @@ var TaskSchema = new Schema({
   tasklist:     {type : Schema.ObjectId, ref: 'Tasklist' },
   priority:     {type : Number, min: 0, max: 3, default: 0 },
   status:       {type : Number, default: 0 },
-
+  tags:         {type : [], get: getTags, set: setTags},
   created_at:   {type : Date, default : Date.now},
   updated_at:   {type : Date, default : Date.now},
 })

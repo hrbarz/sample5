@@ -18,7 +18,7 @@ exports.load = function(req, res, next, idtask){
 
   Task.load(idtask, function (err, task) {
     if (err) return next(err)
-    if (!tasklist) return next(new Error('not found'))
+    if (!Task) return next(new Error('not found'))
     req.task = task
     next()
   })
@@ -39,12 +39,12 @@ exports.index = function(req, res){
         page: page
       }
 
-  Tasklist.list(options, function(err, tasklist) {
+  Task.list(options, function(err, Task) {
     if (err) return res.render('500')
-    Tasklist.count().exec(function (err, count) {
+    Task.count().exec(function (err, count) {
       res.json({
-        title: 'Tasklists',
-        articles: tasklist,
+        title: 'Tasks',
+        tasks: Task,
         page: page + 1,
         pages: Math.ceil(count / perPage)
       })
@@ -53,65 +53,68 @@ exports.index = function(req, res){
 }
 
 /**
- * New tasklist
+ * New Task
  */
 
 exports.new = function(req, res){
   res.json({
-    title: 'New Tasklist',
-    tasklist: new Tasklist({})
+    title: 'New Task',
+    Task: new Task({})
   })
 }
 
 /**
- * Create an tasklist
+ * Create an Task
  */
 
 exports.create = function (req, res) {
-  var tasklist = new Tasklist(req.body)
-  tasklist.user = req.user
 
-  tasklist.save(function (err) {
+  console.log(req.body);
+
+  var Task = new Task(req.body)
+  Task.user = req.user
+
+  Task.save(function (err) {
     if (!err) {
-      req.flash('message', 'Successfully created tasklist!')
-      return res.redirect('/tasklists/'+tasklist._id)
+      req.flash('message', 'Successfully created Task!')
+      return res.redirect('/tasks/'+Task._id)
     }
 
     res.json({
-      title: 'New Tasklist',
-      tasklist: tasklist,
+      title: 'New Task',
+      Task: Task,
       errors: utils.errors(err.errors || err)
     })
   })
 }
 
 /**
- * Edit an tasklist
+ * Edit an Task
  */
 
 exports.edit = function (req, res) {
-  res.json('tasklists/edit', {
-    name: 'Edit ' + req.tasklist.name,
-    tasklist: req.tasklist
+  res.json('tasks/edit', {
+    name: 'Edit ' + req.task.name,
+    Task: req.task
   })
 }
 
 /**
- * Update tasklist
+ * Update Task
  */
 
 exports.update = function(req, res){
-  var tasklist = req.article
-  tasklist = _.extend(tasklist, req.body)
+  var Task = req.task
+  Task = _.extend(Task, req.body)
 
-  tasklist.save(function(err) {
+  Task.save(function(err) {
     if (!err) {
-      return res.redirect('/tasklists/' + tasklist._id)
+      return res.redirect('/tasks/' + Task._id)
     }
 
     res.json({
-      title: 'Edit Tasklist',
-      tasklist: tasklist,
+      title: 'Edit Task',
+      Task: Task,
       errors: err.errors
     })
   })
@@ -124,19 +127,19 @@ exports.update = function(req, res){
 exports.show = function(req, res){
   res.json({
     message: req.flash(''),
-    title: req.tasklist.title,
-    tasklist: req.tasklist
+    title: req.task.title,
+    Task: req.task
   })
 }
 
 /**
- * Delete an article
+ * Delete an task
  */
 
 exports.destroy = function(req, res){
-  var tasklist = req.tasklist
-  tasklist.remove(function(err){
+  var Task = req.task
+  Task.remove(function(err){
     req.flash('message', 'Deleted successfully')
-    res.redirect('/articles')
+    res.redirect('/tasks')
   })
 }

@@ -43,7 +43,7 @@ exports.index = function(req, res){
     Tasklist.count().exec(function (err, count) {
       res.json({
         title: 'Tasklists',
-        articles: tasklist,
+        tasklists: tasklist,
         page: page + 1,
         pages: Math.ceil(count / perPage)
       })
@@ -58,7 +58,8 @@ exports.index = function(req, res){
 exports.new = function(req, res){
   res.json({
     title: 'New Tasklist',
-    tasklist: new Tasklist({})
+    tasklist: new Tasklist({}),
+    _csrf: req.session._csrf
   })
 }
 
@@ -67,6 +68,9 @@ exports.new = function(req, res){
  */
 
 exports.create = function (req, res) {
+
+  console.log(req.body);
+
   var tasklist = new Tasklist(req.body)
   tasklist.user = req.user
 
@@ -100,7 +104,7 @@ exports.edit = function (req, res) {
  */
 
 exports.update = function(req, res){
-  var tasklist = req.article
+  var tasklist = req.tasklist
   tasklist = _.extend(tasklist, req.body)
 
   tasklist.save(function(err) {
@@ -122,20 +126,20 @@ exports.update = function(req, res){
 
 exports.show = function(req, res){
   res.json({
-    message: req.flash(''),
-    title: req.tasklist.title,
+    message: req.flash('message'),
+    title: req.tasklist.name,
     tasklist: req.tasklist
   })
 }
 
 /**
- * Delete an article
+ * Delete an tasklist
  */
 
 exports.destroy = function(req, res){
   var tasklist = req.tasklist
   tasklist.remove(function(err){
     req.flash('message', 'Deleted successfully')
-    res.redirect('/articles')
+    res.redirect('/tasklists')
   })
 }
