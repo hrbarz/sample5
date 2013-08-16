@@ -5,6 +5,7 @@
 
 var mongoose = require('mongoose')
   , Task     = mongoose.model('Task')
+  , Tasklist = mongoose.model('Tasklist')
   , utils    = require('../../lib/utils')
   , _        = require('underscore')
 
@@ -16,7 +17,7 @@ exports.load = function(req, res, next, idtask){
   
   var User = mongoose.model('User')
 
-  Task.load(idtask, function (err, task) {
+  task.load(idtask, function (err, task) {
     if (err) return next(err)
     if (!Task) return next(new Error('not found'))
     req.task = task
@@ -39,9 +40,9 @@ exports.index = function(req, res){
         page: page
       }
 
-  Task.list(options, function(err, Task) {
+  Task.list(options, function(err, task) {
     if (err) return res.render('500')
-    Task.count().exec(function (err, count) {
+    task.count().exec(function (err, count) {
       res.json({
         title: 'Tasks',
         tasks: Task,
@@ -69,20 +70,44 @@ exports.new = function(req, res){
 
 exports.create = function (req, res) {
 
-  console.log(req.body);
+  var task = new Task(req.body)
+  task.user = req.user
 
-  var Task = new Task(req.body)
-  Task.user = req.user
-
-  Task.save(function (err) {
+  task.save(function (err) {
     if (!err) {
       req.flash('message', 'Successfully created Task!')
-      return res.redirect('/tasks/'+Task._id)
+      return res.redirect('/tasks/'+task._id)
     }
 
     res.json({
       title: 'New Task',
-      Task: Task,
+      Task: task,
+      errors: utils.errors(err.errors || err)
+    })
+  })
+}
+
+/**
+ * Create an Task in list
+ */
+
+exports.createinlist = function (req, res) {
+
+  var task = new Task(req.body)
+  task.user = req.user
+  task.tasklist = req.tasklist._id
+
+  task.save(function (err) {
+    if (!err) {
+      req.flash('message', 'Successfully created Task!')
+      return res.redirect('/tasks/inlist/'+ req.tasklist._id +'/'+task._id)
+    }
+
+    req.tasklist.tasks.push(task._id)
+
+    res.json({
+      title: 'New Task',
+      Task: task,
       errors: utils.errors(err.errors || err)
     })
   })
@@ -104,17 +129,19 @@ exports.edit = function (req, res) {
  */
 
 exports.update = function(req, res){
-  var Task = req.task
-  Task = _.extend(Task, req.body)
+  var task = req.task
+  task = _.extend(Task, req.body)
 
-  Task.save(function(err) {
+  task.tasklist = req.tasklist._id
+
+  task.save(function(err) {
     if (!err) {
-      return res.redirect('/tasks/' + Task._id)
+      return res.redirect('/tasks/' + task._id)
     }
 
     res.json({
       title: 'Edit Task',
-      Task: Task,
+      Task: task,
       errors: err.errors
     })
   })
@@ -137,8 +164,8 @@ exports.show = function(req, res){
  */
 
 exports.destroy = function(req, res){
-  var Task = req.task
-  Task.remove(function(err){
+  var task = req.task
+  task.remove(function(err){
     req.flash('message', 'Deleted successfully')
     res.redirect('/tasks')
   })

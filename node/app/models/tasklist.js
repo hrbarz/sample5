@@ -32,7 +32,7 @@ var TasklistSchema = new Schema({
   name:         {type : String, default : '', trim : true},
   description:  {type : String, default : '', trim : true},
   user:         {type : Schema.ObjectId, ref: 'User'},
-  tasks:        {type : Schema.ObjectId, ref: 'Task' },
+  tasks:        [{type : Schema.ObjectId, ref: 'Task' }],
   created_at:   {type : Date, default : Date.now},
   updated_at:   {type : Date, default : Date.now},
 })

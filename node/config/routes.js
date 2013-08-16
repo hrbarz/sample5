@@ -104,13 +104,19 @@ module.exports = function (app, passport) {
   app.param('idtasklist', tasklists.load)
 
   // task routes
-  app.get('/tasks'                , auth.requiresLogin, tasks.index)
-  app.get('/tasks/new'            , auth.requiresLogin, tasks.new) 
-  app.post('/tasks'               , auth.requiresLogin, tasks.create)  
-  app.get('/tasks/:idtask'        , auth.requiresLogin, tasks.show)
-  app.get('/tasks/:idtask/edit'   , auth.requiresLogin, tasks.edit)
-  app.put('/tasks/:idtask'        , auth.requiresLogin, tasks.update)
-  app.del('/tasks/:idtask'        , auth.requiresLogin, tasks.destroy)
+  app.get('/tasks'                      , auth.requiresLogin, tasks.index)
+  app.get('/tasks/new'                  , auth.requiresLogin, tasks.new) 
+  app.post('/tasks'                     , auth.requiresLogin, tasks.create)  
+  app.get('/tasks/:idtask'              , auth.requiresLogin, tasks.show)
+  app.get('/tasks/:idtask/edit'         , auth.requiresLogin, tasks.edit)
+  app.put('/tasks/:idtask'              , auth.requiresLogin, tasks.update)
+  app.del('/tasks/:idtask'              , auth.requiresLogin, tasks.destroy)
+
+  app.get('/tasks/inlist/:idtasklist'          , auth.requiresLogin, tasks.inlist.index)
+  app.post('/tasks/inlist/:idtasklist'         , auth.requiresLogin, tasks.createinlist)  
+  app.get('/tasks/inlist/:idtasklist/:idtask'  , auth.requiresLogin, tasks.show)
+  app.put('/tasks/inlist/:idtasklist/:idtask'  , auth.requiresLogin, tasks.updateinlist)
+
 
   app.param('idtask', tasks.load)
 
