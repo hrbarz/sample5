@@ -132,6 +132,27 @@ exports.update = function(req, res){
   var task = req.task
   task = _.extend(Task, req.body)
 
+  task.save(function(err) {
+    if (!err) {
+      return res.redirect('/tasks/' + task._id)
+    }
+
+    res.json({
+      title: 'Edit Task',
+      Task: task,
+      errors: err.errors
+    })
+  })
+}
+
+/**
+ * Update Task in list
+ */
+
+exports.updateinlist = function(req, res){
+  var task = req.task
+  task = _.extend(task, req.body)
+
   task.tasklist = req.tasklist._id
 
   task.save(function(err) {

@@ -112,10 +112,10 @@ module.exports = function (app, passport) {
   app.put('/tasks/:idtask'              , auth.requiresLogin, tasks.update)
   app.del('/tasks/:idtask'              , auth.requiresLogin, tasks.destroy)
 
-  app.get('/tasks/inlist/:idtasklist'          , auth.requiresLogin, tasks.inlist.index)
+  //app.get('/tasks/inlist/:idtasklist'          , auth.requiresLogin, tasks.inlist.index)
   app.post('/tasks/inlist/:idtasklist'         , auth.requiresLogin, tasks.createinlist)  
-  app.get('/tasks/inlist/:idtasklist/:idtask'  , auth.requiresLogin, tasks.show)
-  app.put('/tasks/inlist/:idtasklist/:idtask'  , auth.requiresLogin, tasks.updateinlist)
+  //app.get('/tasks/inlist/:idtasklist/:idtask'  , auth.requiresLogin, tasks.show)
+  app.put('/tasks/inlist/:idtasklist/:idtask'  , auth.requiresLogin, tasks.update)
 
 
   app.param('idtask', tasks.load)
