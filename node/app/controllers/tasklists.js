@@ -28,8 +28,8 @@ exports.load = function(req, res, next, idtasklist){
  */
 
 exports.index = function(req, res){
-  
-  var criteria = { user: req.user },
+
+  var criteria = { user: req.user.id },
       page = (req.param('page') > 0 ? req.param('page') : 1) - 1,
       perPage = 30,
       options = {
@@ -68,8 +68,6 @@ exports.new = function(req, res){
  */
 
 exports.create = function (req, res) {
-
-  console.log(req.body);
 
   var tasklist = new Tasklist(req.body)
   tasklist.user = req.user
@@ -126,7 +124,7 @@ exports.update = function(req, res){
 
 exports.show = function(req, res){
   res.json({
-    message: req.flash('message'),
+    flash: req.flash('message'),
     title: req.tasklist.name,
     tasklist: req.tasklist
   })

@@ -17,7 +17,7 @@ exports.load = function(req, res, next, idtask){
   
   var User = mongoose.model('User')
 
-  task.load(idtask, function (err, task) {
+  Task.load(idtask, function (err, task) {
     if (err) return next(err)
     if (!Task) return next(new Error('not found'))
     req.task = task
@@ -54,6 +54,42 @@ exports.index = function(req, res){
 }
 
 /**
+ * In List
+ */
+
+exports.indexinlist = function(req, res){
+  
+  var criteria = { 
+          user: req.user.id, 
+          tasklist: req.tasklist.id          
+      }
+  
+  if(req.param('status'))  criteria.status = req.param('status')
+
+
+  var page = (req.param('page') > 0 ? req.param('page') : 1) - 1,
+      perPage = 30,
+      options = {
+        criteria: criteria,
+        perPage: perPage,
+        page: page
+      }
+
+  
+  Task.list(options, function(err, task) {
+    if (err) return res.render('500')
+    Task.count().exec(function (err, count) {
+      res.json({
+        title: 'Tasks',
+        tasks: task,
+        page: page + 1,
+        pages: Math.ceil(count / perPage)
+      })
+    })
+  })
+}
+
+/**
  * New Task
  */
 
@@ -70,48 +106,43 @@ exports.new = function(req, res){
 
 exports.create = function (req, res) {
 
-  var task = new Task(req.body)
-  task.user = req.user
+  Tasklist.ckeckInsertTask(req.body.tasklist,req.user,function(err,tasklist){
 
-  task.save(function (err) {
-    if (!err) {
-      req.flash('message', 'Successfully created Task!')
-      return res.redirect('/tasks/'+task._id)
-    }
+    var task = new Task(req.body)
 
-    res.json({
-      title: 'New Task',
-      Task: task,
-      errors: utils.errors(err.errors || err)
+    task.user = req.user
+    task.tasklist = tasklist.id
+
+    task.save(function (err) {
+
+      if (!err  ) {
+
+        tasklist.tasks.push(task._id)
+
+        tasklist.save(function (err){
+
+          req.flash('message', 'Successfully created Task!')
+          return res.redirect('/tasks/'+task._id)
+
+        })
+
+      }else{
+
+        res.json({
+          title: 'New Task',
+          task: task,
+          errors: utils.errors(err.errors || err)
+        })
+
+      }
+
     })
+
+
   })
 }
 
-/**
- * Create an Task in list
- */
 
-exports.createinlist = function (req, res) {
-
-  var task = new Task(req.body)
-  task.user = req.user
-  task.tasklist = req.tasklist._id
-
-  task.save(function (err) {
-    if (!err) {
-      req.flash('message', 'Successfully created Task!')
-      return res.redirect('/tasks/inlist/'+ req.tasklist._id +'/'+task._id)
-    }
-
-    req.tasklist.tasks.push(task._id)
-
-    res.json({
-      title: 'New Task',
-      Task: task,
-      errors: utils.errors(err.errors || err)
-    })
-  })
-}
 
 /**
  * Edit an Task
@@ -145,28 +176,6 @@ exports.update = function(req, res){
   })
 }
 
-/**
- * Update Task in list
- */
-
-exports.updateinlist = function(req, res){
-  var task = req.task
-  task = _.extend(task, req.body)
-
-  task.tasklist = req.tasklist._id
-
-  task.save(function(err) {
-    if (!err) {
-      return res.redirect('/tasks/' + task._id)
-    }
-
-    res.json({
-      title: 'Edit Task',
-      Task: task,
-      errors: err.errors
-    })
-  })
-}
 
 /**
  * Show
@@ -174,9 +183,9 @@ exports.updateinlist = function(req, res){
 
 exports.show = function(req, res){
   res.json({
-    message: req.flash(''),
+    fash: req.flash(''),
     title: req.task.title,
-    Task: req.task
+    task: req.task
   })
 }
 
@@ -191,3 +200,86 @@ exports.destroy = function(req, res){
     res.redirect('/tasks')
   })
 }
+
+
+/**
+ * Get count task 
+ */
+
+
+exports.count_alltasks_priority = function(req,res){
+
+    //res.header("Access-Control-Allow-Origin", '*'); 
+    //res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    var min_priority = 0,
+        max_priority = 3
+
+    var get_count = function(priority,values,cb){
+  
+      Task.count(
+           { 
+               user: req.user.id
+              ,priority:priority
+              ,status:0
+           
+           }, function (err, count) {
+
+            values.push(count);
+
+            priority++;
+
+            if(priority > max_priority){
+              return cb(values);
+            }
+
+            get_count(priority,values,cb);
+
+        }
+      );
+  }
+
+  get_count( min_priority , [] ,function (values){
+
+    res.json({count:values});
+  
+  });
+  
+}
+
+exports.count_priority_all = function(req,res){
+
+    //res.header("Access-Control-Allow-Origin", '*'); 
+    //res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+    var get_count = function(tasklist,priority,values,end){
+  
+      Task.count(
+           { 
+               tasklist:tasklist
+              ,priority:priority
+              ,status:0
+           }
+          , function (err, count) {
+
+            values.push(count);
+
+            priority++;
+
+            if(priority == 3){
+            return end(values);
+          }
+
+              get_count(tasklist,priority,values,end);
+
+        }
+      );
+  }
+
+  get_count(req.params.id , 0 , [] ,function (values){
+
+    res.json({id: req.params.id ,count:values});
+  
+  });
+  
+}
+
