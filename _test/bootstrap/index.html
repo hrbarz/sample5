@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Fixed Top Navbar Example for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <!--     <link href="http://bootswatch.com/flatly/bootstrap.css" rel="stylesheet" -->
+ 
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+      body,html, .container{
+
+        height: 100%;
+        width: 100%;
+
+      }
+
+      .container{
+
+        max-width: none;
+        padding-top: 3px;
+        padding-bottom: 58px;
+      }
+
+      .barsup{
+
+          background-color: #ddd;
+          height: 55px;
+          border-bottom: 2px solid #ccc;
+          padding-top: 8px;
+          padding-bottom: 8px;
+
+      }
+
+      .sideizq{
+          height: 100%;
+          border-right: 1px solid #ccc;
+          overflow-y: auto;
+          padding: 0;
+          margin: 0;
+        
+      }
+      .sideder{
+          height: 100%;
+          background-color: #fff;
+          overflow-y: auto;
+      }
+
+
+      .list-group-item:first-child {
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+      }
+      .list-group-item:last-child {
+        margin-bottom: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      .list-group-item.active,
+      .list-group-item.active:hover,
+      .list-group-item.active:focus {
+        background-color: #999;
+        border: none;
+      }
+
+
+      a.list-group-item.active > .badge,
+      .nav-pills > .active > a > .badge {
+        color: #666;
+        background-color: #ffffff;
+      }
+
+      .list-group-item.active .list-group-item-text,
+      .list-group-item.active:hover .list-group-item-text,
+      .list-group-item.active:focus .list-group-item-text {
+        color: #ddd;
+      }
+
+    </style>
+    
+  </head>
+
+  <body>
+
+   
+
+    <div class="container" style="background:#999">
+
+      <div class="row barsup">        
+        <div class="col-md-2">LOGO</div>
+        <div class="col-md-10 text-right">
+
+          <button type="button" class="btn btn-primary">Create Task</button>
+        </div>
+      </div>
+
+
+      <div class="row" style="height:100%; background-color:#eee; border-bottom:2px solid #ccc">        
+
+        <div class="col-md-4 sideizq">
+
+          <div class="list-group" style="margin:none">
+            
+            <a href="#" class="list-group-item text-center" styles="background:#ccc">
+              Create New Tasklist
+            </a>
+
+            <a href="#" class="list-group-item active">
+              
+              <span class="badge">3</span>
+              <span class="badge">0</span>
+              <span class="badge">2</span>
+              <span class="badge">4</span>
+
+
+              <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-star"></span> List group item heading</h4>
+              <p class="list-group-item-text">Hola componente.. </p>
+            </a>
+
+            <a href="#" class="list-group-item">
+              
+              <span class="badge">3</span>
+              <span class="badge">0</span>
+              <span class="badge">2</span>
+              <span class="badge">4</span>
+
+              <h4 class="list-group-item-heading">
+                <span class="glyphicon glyphicon-eye-open"></span>
+                Tem heading</h4>
+              <p class="list-group-item-text">...</p>
+            </a>
+
+
+          </div>
+
+        </div>
+
+        <div class="col-md-8 sideder">
+            
+            <h1>Marketing stuff! 
+              <span class="badge">3</span>
+              <span class="badge">0</span>
+              <span class="badge">2</span>
+              <span class="badge">4</span>              
+            </h1>
+            <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo.</p>
+
+
+            <div class="list-group">
+              <a href="#" class="list-group-item active">
+                Urgent!
+              </a>
+
+
+              <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+              <a href="#" class="list-group-item">Morbi leo risus</a>
+              <a href="#" class="list-group-item">Vestibulum at eros</a>
+
+
+            </div>
+
+
+            <div class="list-group">
+              <a href="#" class="list-group-item active">
+                Importan!
+              </a>
+              <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+              <a href="#" class="list-group-item">Vestibulum at eros</a>
+            </div>
+
+
+            <div class="list-group">
+              <a href="#" class="list-group-item active">
+                Importan!
+              </a>
+              <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+              <a href="#" class="list-group-item">Vestibulum at eros</a>
+            </div>
+
+
+
+        </div>
+
+
+      </div>
+
+      <!-- Main component for a primary marketing message or call to action -->
+      
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
